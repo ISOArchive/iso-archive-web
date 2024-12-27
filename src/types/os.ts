@@ -39,26 +39,14 @@ export interface OS {
   url: string
 }
 
-export interface OSParams {
-  variants: {
-    [key: string]: string
-  }
-  names: {
-    [key: string]: string
-  }
-  versions: {
-    [key: string]: string
-  }
-  disketteSizes: {
-    [key: string]: string
-  }
-  floppySizes: {
-    [key: string]: string
-  }
-  archs: {
-    [key: string]: string
-  }
-  tags: {
-    [key: string]: string
-  }
+export type OSParams = Record<string, Record<string, string>>
+
+export const OSParamsText = {
+  variants: 'Variant',
+  names: 'Name',
+  versions: 'Version',
+  disketteSizes: 'Diskette Size',
+  floppySizes: 'Floppy Size',
+  archs: 'Arch',
+  tags: 'Tags'
 }
