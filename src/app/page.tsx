@@ -51,9 +51,10 @@ export default function Home() {
             <li>arm</li>
             <li>mips</li>
             <li>x86</li>
-            <li>x86_64</li>
+            <li>amd64</li>
             <li>ppc</li>
-            <li>ppc64 (either el or le)</li>
+            <li>ppc64</li>
+            <li>ppc64le</li>
             <li>m68k</li>
             <li>sparc</li>
             <li>ia64</li>

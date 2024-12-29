@@ -16,7 +16,7 @@ export enum Arch {
   Arm = 'arm',
   Mips = 'mips',
   X86 = 'x86',
-  X86_64 = 'x86_64',
+  AMD64 = 'amd64',
   Ppc = 'ppc',
   Ppc64 = 'ppc64',
   Ppc64LE = 'ppc64le',
@@ -28,10 +28,11 @@ export enum Arch {
 }
 
 export interface OS {
+  variant: string
   name: string
   version: string
-  disketteSize: DisketteSize
-  floppySize: FloppySize
+  disketteSize?: DisketteSize
+  floppySize?: FloppySize
   arch: Arch
   tags: string[]
   extension: string
