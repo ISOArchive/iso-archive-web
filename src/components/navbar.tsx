@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -5,6 +6,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle
 } from '@/components/ui/navigation-menu'
+import { cn } from '@/lib/utils'
 import Link from 'next/link'
 
 export const NavBar = () => {
@@ -13,8 +15,11 @@ export const NavBar = () => {
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href='/' legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Home
+            <NavigationMenuLink
+              className={cn(navigationMenuTriggerStyle(), 'gap-2')}
+            >
+              <img src='/Icon.svg' alt='ISO Archive' className='h-6 w-6' />
+              ISO Archive
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

@@ -6,30 +6,19 @@ import { DataTableColumnHeader } from '@/components/ui/data-table'
 import type { OS } from '@/types/os'
 import { ColumnDef } from '@tanstack/react-table'
 import { Download } from 'lucide-react'
+import { filesize } from 'filesize'
 
-export const columns: ColumnDef<OS>[] = [
+export const OSListColumns: ColumnDef<OS>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Distro' />
+      <DataTableColumnHeader column={column} title='Name' />
     )
   },
   {
     accessorKey: 'version',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Version' />
-    )
-  },
-  {
-    accessorKey: 'disketteSize',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Diskette Size' />
-    )
-  },
-  {
-    accessorKey: 'floppySize',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Floppy Size' />
     )
   },
   {
@@ -44,7 +33,7 @@ export const columns: ColumnDef<OS>[] = [
       <DataTableColumnHeader column={column} title='Tags' />
     ),
     cell: ({ cell }) => {
-      const tags = cell.getValue<string>().split(',')
+      const tags = cell.getValue<string[]>()
 
       return (
         <div className='flex flex-wrap gap-1'>
@@ -54,6 +43,18 @@ export const columns: ColumnDef<OS>[] = [
         </div>
       )
     }
+  },
+  {
+    accessorKey: 'disketteSize',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Diskette Size' />
+    )
+  },
+  {
+    accessorKey: 'floppySize',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Floppy Size' />
+    )
   },
   {
     accessorKey: 'extension',
@@ -69,7 +70,12 @@ export const columns: ColumnDef<OS>[] = [
         title='Size'
         className='text-right'
       />
-    )
+    ),
+    cell: ({ cell }) => {
+      const size = cell.getValue<number>()
+
+      return filesize(size, { round: 1 })
+    }
   },
   {
     id: 'actions',
@@ -83,7 +89,7 @@ export const columns: ColumnDef<OS>[] = [
           onClick={() => window.open(url, '_blank')}
         >
           <span className='sr-only'>Download</span>
-          <Download className='h-4 w-4' />
+          <Download className='ml-2 h-4 w-4' />
         </Button>
       )
     }
