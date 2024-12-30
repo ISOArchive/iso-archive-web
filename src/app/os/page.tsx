@@ -29,53 +29,84 @@ import { cn } from '@/lib/utils'
 import { OSParamsText, type OS, type OSParams } from '@/types/os'
 import { Check, LoaderCircle, Minus, PanelLeft, Plus } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { OSListColumns } from './columns'
+import type { PaginationState, SortingState } from '@tanstack/react-table'
 
 type ParamsState = Record<string, string[]>
 
 const paramReducer = (
   state: ParamsState,
   action: {
-    type: 'add' | 'remove' | 'set'
-    key: keyof ParamsState
+    type: 'add' | 'remove' | 'set' | 'sorting' | 'pagination'
+    key?: keyof ParamsState
     value?: string
+    sorting?: SortingState
+    pagination?: PaginationState
   }
 ): Record<string, string[]> => {
   switch (action.type) {
     case 'add':
-      if (state[action.key]) {
-        return {
-          ...state,
-          [action.key]: [...state[action.key], action.value!]
-        }
-      } else {
-        return {
-          ...state,
-          [action.key]: [action.value!]
+      if (action.key) {
+        if (state[action.key]) {
+          return {
+            ...state,
+            [action.key]: [...state[action.key], action.value!]
+          }
+        } else {
+          return {
+            ...state,
+            [action.key]: [action.value!]
+          }
         }
       }
     case 'remove':
-      if (state[action.key]) {
-        return {
-          ...state,
-          [action.key]: action.value
-            ? state[action.key].filter((value) => value !== action.value)
-            : []
+      if (action.key) {
+        if (state[action.key]) {
+          return {
+            ...state,
+            [action.key]: action.value
+              ? state[action.key].filter((value) => value !== action.value)
+              : []
+          }
+        } else {
+          return state
         }
-      } else {
-        return state
       }
     case 'set':
+      if (action.key) {
+        return {
+          ...state,
+          [action.key]: action.value ? [action.value] : []
+        }
+      }
+    case 'sorting':
+      const newState = { ...state }
+      if (action.sorting && action.sorting[0]) {
+        if (action.sorting[0].desc) {
+          newState.descBy = [action.sorting[0].id]
+          newState.ascBy = []
+        } else {
+          newState.ascBy = [action.sorting[0].id]
+          newState.descBy = []
+        }
+      }
+      return newState
+    case 'pagination':
       return {
         ...state,
-        [action.key]: action.value ? [action.value] : []
+        page: action.pagination?.pageIndex
+          ? [action.pagination.pageIndex.toString()]
+          : [],
+        size: action.pagination?.pageSize
+          ? [action.pagination.pageSize.toString()]
+          : []
       }
   }
 }
 
-const useOSParams = (paramState: ParamsState) => {
+const constructQuery = (paramState: ParamsState) => {
   const params = new URLSearchParams()
   Object.entries(paramState).forEach(([key, values]) => {
     values.forEach((value) => {
@@ -83,28 +114,46 @@ const useOSParams = (paramState: ParamsState) => {
     })
   })
   const search = params.toString()
-  const query = search ? `?${search}` : ''
+  return search ? `?${search}` : ''
+}
 
-  return useSWRFetcher<OSParams>(`/api/os/params${query}`)
+const useOSParams = (paramState: ParamsState) => {
+  return useSWRFetcher<OSParams>(`/api/os/params${constructQuery(paramState)}`)
 }
 
 const useOSList = (paramState: ParamsState) => {
-  const params = new URLSearchParams()
-  Object.entries(paramState).forEach(([key, values]) => {
-    values.forEach((value) => {
-      params.append(key, value)
-    })
-  })
-  const search = params.toString()
-  const query = search ? `?${search}` : ''
+  return useSWRFetcher<OS[]>(`/api/os${constructQuery(paramState)}`)
+}
 
-  return useSWRFetcher<OS[]>(`/api/os${query}`)
+const useOSCount = (paramState: ParamsState) => {
+  return useSWRFetcher<number>(`/api/os/count${constructQuery(paramState)}`)
 }
 
 export default function Page() {
   const { isMobile, toggleSidebar } = useSidebar()
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  const [sorting, setSorting] = useState<SortingState>(() => {
+    if (searchParams.has('ascBy')) {
+      return [{ id: searchParams.get('ascBy')!, desc: false }]
+    } else if (searchParams.has('descBy')) {
+      return [{ id: searchParams.get('descBy')!, desc: true }]
+    }
+    return []
+  })
+  const [pagination, setPagination] = useState<PaginationState>(() => {
+    const state: PaginationState = {
+      pageIndex: 0,
+      pageSize: 10
+    }
+    if (searchParams.has('page')) {
+      state.pageIndex = parseInt(searchParams.get('page')!)
+    }
+    if (searchParams.has('size')) {
+      state.pageSize = parseInt(searchParams.get('size')!)
+    }
+    return state
+  })
   const [paramState, paramDispatch] = useReducer(
     paramReducer,
     Object.fromEntries(
@@ -132,6 +181,7 @@ export default function Page() {
     error: osListError,
     isLoading: osListLoading
   } = useOSList(paramState)
+  const { data: osCount } = useOSCount(paramState)
   const handleSearch = useDebouncedCallback((value: string) => {
     if (value) {
       paramDispatch({ type: 'set', key: 'search', value })
@@ -152,6 +202,18 @@ export default function Page() {
     const url = `${pathname}${query}`
     history.pushState({}, '', url)
   }, [paramState, pathname])
+
+  useEffect(() => {
+    if (sorting.length) {
+      paramDispatch({ type: 'sorting', sorting })
+    }
+  }, [sorting])
+
+  useEffect(() => {
+    if (pagination.pageIndex || pagination.pageSize) {
+      paramDispatch({ type: 'pagination', pagination })
+    }
+  }, [pagination])
 
   return (
     <>
@@ -254,7 +316,15 @@ export default function Page() {
           />
         </div>
         {osList ? (
-          <DataTable columns={OSListColumns} data={osList} />
+          <DataTable
+            columns={OSListColumns}
+            data={osList}
+            onSortingChange={setSorting}
+            onPaginationChange={setPagination}
+            sorting={sorting}
+            pagination={pagination}
+            rowCount={osCount}
+          />
         ) : osListError ? (
           <div>{osListError.message}</div>
         ) : osListLoading ? (

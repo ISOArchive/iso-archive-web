@@ -115,13 +115,20 @@ export async function GET(request: NextRequest) {
       }
       if (searchParams.has('search')) {
         state.push(
-          Object.values(os).some(
-            (value) =>
-              typeof value === 'string' &&
-              value
+          Object.values(os).some((value) => {
+            if (typeof value === 'string') {
+              return value
                 .toLowerCase()
                 .includes(searchParams.get('search')!.toLowerCase())
-          )
+            } else if (Array.isArray(value)) {
+              return value.some((v) =>
+                v
+                  .toLowerCase()
+                  .includes(searchParams.get('search')!.toLowerCase())
+              )
+            }
+            return false
+          })
         )
       }
 

@@ -1,12 +1,5 @@
 'use client'
 
-import {
-  Column,
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable
-} from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -31,6 +24,17 @@ import {
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import {
+  Column,
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  type OnChangeFn,
+  type PaginationState,
+  type SortingState,
+  type Table as TanstackTable
+} from '@tanstack/react-table'
+import {
   ArrowDown,
   ArrowUp,
   ChevronLeft,
@@ -39,7 +43,6 @@ import {
   ChevronsRight,
   ChevronsUpDown
 } from 'lucide-react'
-import { type Table as TanstackTable } from '@tanstack/react-table'
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -124,7 +127,7 @@ export function DataTablePagination<TData>({
           <Button
             variant='outline'
             className='hidden h-8 w-8 p-0 lg:flex'
-            onClick={() => table.setPageIndex(0)}
+            onClick={() => table.firstPage()}
             disabled={!table.getCanPreviousPage()}
           >
             <span className='sr-only'>Go to first page</span>
@@ -155,7 +158,7 @@ export function DataTablePagination<TData>({
           <Button
             variant='outline'
             className='hidden h-8 w-8 p-0 lg:flex'
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            onClick={() => table.lastPage()}
             disabled={!table.getCanNextPage()}
           >
             <span className='sr-only'>Go to last page</span>
@@ -170,17 +173,35 @@ export function DataTablePagination<TData>({
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onPaginationChange?: OnChangeFn<PaginationState>
+  onSortingChange?: OnChangeFn<SortingState>
+  pagination?: PaginationState
+  rowCount?: number
+  sorting?: SortingState
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data
+  data,
+  sorting,
+  pagination,
+  rowCount,
+  onSortingChange,
+  onPaginationChange
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     manualPagination: true,
-    getCoreRowModel: getCoreRowModel()
+    manualSorting: true,
+    rowCount,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: onSortingChange,
+    onPaginationChange,
+    state: {
+      sorting,
+      pagination
+    }
   })
 
   return (
