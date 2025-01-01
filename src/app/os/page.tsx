@@ -29,7 +29,7 @@ import { cn } from '@/lib/utils'
 import { OSParamsText, type OS, type OSParams } from '@/types/os'
 import { Check, LoaderCircle, Minus, PanelLeft, Plus } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useReducer, useState } from 'react'
+import { Suspense, useEffect, useMemo, useReducer, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { OSListColumns } from './columns'
 import type { PaginationState, SortingState } from '@tanstack/react-table'
@@ -203,7 +203,7 @@ const useOSCount = ({
   )
 }
 
-export default function Page() {
+const OSList = () => {
   const { isMobile, toggleSidebar } = useSidebar()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -416,5 +416,13 @@ export default function Page() {
         )}
       </main>
     </>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense>
+      <OSList />
+    </Suspense>
   )
 }
