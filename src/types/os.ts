@@ -40,7 +40,7 @@ export interface OS {
   url: string
 }
 
-export type OSParams = Record<string, Record<string, string>>
+export type OSParams = Record<string, string[]>
 
 export const OSParamsText = {
   variants: 'Variant',
