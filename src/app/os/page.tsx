@@ -118,15 +118,27 @@ const constructQuery = (paramState: ParamsState) => {
 }
 
 const useOSParams = (paramState: ParamsState) => {
-  return useSWRFetcher<OSParams>(`/api/os/params${constructQuery(paramState)}`)
+  return useSWRFetcher<OSParams>(
+    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/os/params${constructQuery(
+      paramState
+    )}`
+  )
 }
 
 const useOSList = (paramState: ParamsState) => {
-  return useSWRFetcher<OS[]>(`/api/os${constructQuery(paramState)}`)
+  return useSWRFetcher<OS[]>(
+    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/os${constructQuery(
+      paramState
+    )}`
+  )
 }
 
 const useOSCount = (paramState: ParamsState) => {
-  return useSWRFetcher<number>(`/api/os/count${constructQuery(paramState)}`)
+  return useSWRFetcher<number>(
+    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/os/count${constructQuery(
+      paramState
+    )}`
+  )
 }
 
 export default function Page() {
