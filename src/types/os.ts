@@ -33,7 +33,7 @@ export interface OS {
   version: string
   disketteSize?: DisketteSize
   floppySize?: FloppySize
-  arch: Arch
+  arch: Arch[]
   tags: string[]
   extension: string
   size: number

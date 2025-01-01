@@ -25,7 +25,18 @@ export const OSListColumns: ColumnDef<OS>[] = [
     accessorKey: 'arch',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title='Arch' />
-    )
+    ),
+    cell: ({ cell }) => {
+      const archs = cell.getValue<string[]>()
+
+      return (
+        <div className='flex flex-wrap gap-1'>
+          {archs.map((arch) => (
+            <Badge key={arch}>{arch}</Badge>
+          ))}
+        </div>
+      )
+    }
   },
   {
     accessorKey: 'tags',

@@ -20,7 +20,7 @@ export default function Home() {
         <code className='relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold'>
           ,
         </code>{' '}
-        at the special tags means multiple extra tags.
+        at the special tags or archs means multiple extra tags or archs.
       </p>
       <ul className='my-6 ml-6 list-disc [&>li]:mt-2'>
         <li>
