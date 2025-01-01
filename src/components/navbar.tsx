@@ -15,6 +15,9 @@ export const NavBar = () => {
       <Link href='/os' legacyBehavior passHref>
         <Button variant='ghost'>OS List</Button>
       </Link>
+      <Link href='/contact' legacyBehavior passHref>
+        <Button variant='ghost'>Contact</Button>
+      </Link>
       <div className='ml-auto flex gap-4'>
         <ModeToggle />
       </div>
