@@ -4,6 +4,7 @@ import './globals.css'
 import { NavBar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from '@/components/theme'
+import { SWRConfig } from 'swr'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -23,18 +24,24 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.variable} antialiased`}>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
+        <SWRConfig
+          value={{
+            keepPreviousData: true
+          }}
         >
-          <div className='container mx-auto px-4'>
-            <NavBar />
-            {children}
-          </div>
-          <Toaster />
-        </ThemeProvider>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className='container mx-auto px-4'>
+              <NavBar />
+              {children}
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </SWRConfig>
       </body>
     </html>
   )

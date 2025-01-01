@@ -29,12 +29,25 @@ import { cn } from '@/lib/utils'
 import { OSParamsText, type OS, type OSParams } from '@/types/os'
 import { Check, LoaderCircle, Minus, PanelLeft, Plus } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useMemo, useReducer, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { OSListColumns } from './columns'
 import type { PaginationState, SortingState } from '@tanstack/react-table'
 
-type ParamsState = Record<string, string[]>
+interface ParamsState {
+  variants?: string[]
+  names?: string[]
+  versions?: string[]
+  disketteSizes?: string[]
+  floppySizes?: string[]
+  archs?: string[]
+  tags?: string[]
+  search?: string[]
+  ascBy?: string[]
+  descBy?: string[]
+  page?: string[]
+  size?: string[]
+}
 
 const paramReducer = (
   state: ParamsState,
@@ -45,14 +58,15 @@ const paramReducer = (
     sorting?: SortingState
     pagination?: PaginationState
   }
-): Record<string, string[]> => {
+): ParamsState => {
   switch (action.type) {
     case 'add':
+      console.log(action)
       if (action.key) {
         if (state[action.key]) {
           return {
             ...state,
-            [action.key]: [...state[action.key], action.value!]
+            [action.key]: [...state[action.key]!, action.value!]
           }
         } else {
           return {
@@ -67,7 +81,7 @@ const paramReducer = (
           return {
             ...state,
             [action.key]: action.value
-              ? state[action.key].filter((value) => value !== action.value)
+              ? state[action.key]!.filter((value) => value !== action.value)
               : []
           }
         } else {
@@ -108,35 +122,83 @@ const paramReducer = (
 
 const constructQuery = (paramState: ParamsState) => {
   const params = new URLSearchParams()
-  Object.entries(paramState).forEach(([key, values]) => {
-    values.forEach((value) => {
-      params.append(key, value)
-    })
-  })
+  Object.entries(paramState).forEach(
+    ([key, values]: [string, string[] | undefined]) => {
+      values?.forEach((value) => {
+        params.append(key, value)
+      })
+    }
+  )
   const search = params.toString()
   return search ? `?${search}` : ''
 }
 
-const useOSParams = (paramState: ParamsState) => {
+const useOSParams = ({
+  variants,
+  names,
+  versions,
+  disketteSizes,
+  floppySizes,
+  archs,
+  tags,
+  search
+}: ParamsState) => {
+  const paramStateMemo = useMemo(
+    () => ({
+      variants,
+      names,
+      versions,
+      disketteSizes,
+      floppySizes,
+      archs,
+      tags,
+      search
+    }),
+    [archs, disketteSizes, floppySizes, names, search, tags, variants, versions]
+  )
+
   return useSWRFetcher<OSParams>(
-    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/os/params${constructQuery(
-      paramState
+    `${process.env.NEXT_PUBLIC_API_URL ?? '/api'}/os/params${constructQuery(
+      paramStateMemo
     )}`
   )
 }
 
 const useOSList = (paramState: ParamsState) => {
+  const paramStateMemo = useMemo(() => paramState, [paramState])
+
   return useSWRFetcher<OS[]>(
-    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/os${constructQuery(
-      paramState
+    `${process.env.NEXT_PUBLIC_API_URL ?? '/api'}/os${constructQuery(
+      paramStateMemo
     )}`
   )
 }
 
-const useOSCount = (paramState: ParamsState) => {
+const useOSCount = ({
+  variants,
+  names,
+  versions,
+  disketteSizes,
+  floppySizes,
+  archs,
+  tags
+}: ParamsState) => {
+  const paramStateMemo = useMemo(
+    () => ({
+      variants,
+      names,
+      versions,
+      disketteSizes,
+      floppySizes,
+      archs,
+      tags
+    }),
+    [archs, disketteSizes, floppySizes, names, tags, variants, versions]
+  )
+
   return useSWRFetcher<number>(
-    `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/os/count${constructQuery(
-      paramState
+    `${process.env.NEXT_PUBLIC_API_URL ?? '/api'}/os/count${constructQuery(
+      paramStateMemo
     )}`
   )
 }
@@ -204,11 +266,13 @@ export default function Page() {
 
   useEffect(() => {
     const params = new URLSearchParams()
-    Object.entries(paramState).forEach(([key, values]) => {
-      values.forEach((value) => {
-        params.append(key, value)
-      })
-    })
+    Object.entries(paramState).forEach(
+      ([key, values]: [string, string[] | undefined]) => {
+        values?.forEach((value) => {
+          params.append(key, value)
+        })
+      }
+    )
     const search = params.toString()
     const query = search ? `?${search}` : ''
     const url = `${pathname}${query}`
@@ -257,22 +321,26 @@ export default function Page() {
                             found.
                           </CommandEmpty>
                           <CommandGroup>
-                            {Object.entries(values).map(([paramKey, value]) => (
+                            {values.map((value) => (
                               <CommandItem
-                                key={paramKey}
-                                value={paramKey}
+                                key={value}
+                                value={value}
                                 onSelect={(value) => {
-                                  if (paramState[key]?.includes(value)) {
+                                  if (
+                                    paramState[
+                                      key as keyof ParamsState
+                                    ]?.includes(value)
+                                  ) {
                                     paramDispatch({
                                       type: 'remove',
-                                      key,
-                                      value: paramKey
+                                      key: key as keyof ParamsState,
+                                      value: value
                                     })
                                   } else {
                                     paramDispatch({
                                       type: 'add',
-                                      key,
-                                      value: paramKey
+                                      key: key as keyof ParamsState,
+                                      value: value
                                     })
                                   }
                                 }}
@@ -281,7 +349,9 @@ export default function Page() {
                                 <Check
                                   className={cn(
                                     'ml-auto',
-                                    paramState[key]?.includes(paramKey)
+                                    paramState[
+                                      key as keyof ParamsState
+                                    ]?.includes(value)
                                       ? 'opacity-100'
                                       : 'opacity-0'
                                   )}
