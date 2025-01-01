@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { NavBar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/toaster'
+import { ThemeProvider } from '@/components/theme'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -22,11 +23,18 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${inter.variable} antialiased`}>
-        <div className='container mx-auto px-4'>
-          <NavBar />
-          {children}
-        </div>
-        <Toaster />
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className='container mx-auto px-4'>
+            <NavBar />
+            {children}
+          </div>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )

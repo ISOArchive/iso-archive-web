@@ -1,36 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle
-} from '@/components/ui/navigation-menu'
-import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { ModeToggle } from '@/components/theme'
+import { Button } from '@/components/ui/button'
 
 export const NavBar = () => {
   return (
-    <NavigationMenu className='py-4'>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href='/' legacyBehavior passHref>
-            <NavigationMenuLink
-              className={cn(navigationMenuTriggerStyle(), 'gap-2')}
-            >
-              <img src='/Icon.svg' alt='ISO Archive' className='h-6 w-6' />
-              ISO Archive
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href='/os' legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              OS List
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+    <nav className='flex justify-center items-center py-4'>
+      <Link href='/' legacyBehavior passHref>
+        <Button variant='ghost'>
+          <img src='/Icon.svg' alt='ISO Archive' className='h-8 w-8' />
+          ISO Archive
+        </Button>
+      </Link>
+      <Link href='/os' legacyBehavior passHref>
+        <Button variant='ghost'>OS List</Button>
+      </Link>
+      <div className='ml-auto flex gap-4'>
+        <ModeToggle />
+      </div>
+    </nav>
   )
 }
