@@ -14,6 +14,18 @@ export default function Page() {
             <li>ISO removal requests can be made through this email.</li>
           </ul>
         </li>
+        <li>
+          GitHub:{' '}
+          <a className='text-blue-500' href='https://github.com/isoarchive/'>
+            https://github.com/isoarchive/
+          </a>
+        </li>
+        <li>
+          Discord:{' '}
+          <a className='text-blue-500' href='https://discord.gg/97yFvUXVbT'>
+            https://discord.gg/97yFvUXVbT
+          </a>
+        </li>
       </ul>
     </main>
   )
