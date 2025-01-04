@@ -64,6 +64,8 @@ export default function Home() {
             <li>s390x</li>
             <li>riscv</li>
             <li>riscv64</li>
+            <li>loongarch</li>
+            <li>loongarch64</li>
           </ul>
         </li>
       </ul>
