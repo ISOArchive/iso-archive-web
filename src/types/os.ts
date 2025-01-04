@@ -14,6 +14,7 @@ export enum Arch {
   Arm64 = 'arm64',
   Arm64e = 'arm64e',
   Arm = 'arm',
+  Armv7 = 'armv7',
   Mips = 'mips',
   Mips64 = 'mips64',
   X86 = 'x86',
