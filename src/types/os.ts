@@ -26,7 +26,9 @@ export enum Arch {
   Sparc = 'sparc',
   Ia64 = 'ia64',
   Hppa = 'hppa',
-  S390x = 's390x'
+  S390x = 's390x',
+  RiscV = 'riscv',
+  RiscV64 = 'riscv64'
 }
 
 export interface OS {

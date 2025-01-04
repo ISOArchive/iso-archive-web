@@ -62,6 +62,8 @@ export default function Home() {
             <li>ia64</li>
             <li>hppa</li>
             <li>s390x</li>
+            <li>riscv</li>
+            <li>riscv64</li>
           </ul>
         </li>
       </ul>
