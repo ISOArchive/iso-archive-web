@@ -50,6 +50,7 @@ export default function Home() {
             <li>arm64e</li>
             <li>arm</li>
             <li>mips</li>
+            <li>mips64</li>
             <li>x86</li>
             <li>amd64</li>
             <li>ppc</li>
