@@ -11,6 +11,7 @@ export enum FloppySize {
 }
 
 export enum Arch {
+  Alpha = 'alpha',
   Arm64 = 'arm64',
   Arm64e = 'arm64e',
   Arm = 'arm',

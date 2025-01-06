@@ -46,6 +46,7 @@ export default function Home() {
         <li>
           Architectures
           <ul className='ml-6 list-disc [&>li]:mt-2'>
+            <li>alpha</li>
             <li>arm64</li>
             <li>arm64e</li>
             <li>arm</li>
@@ -61,6 +62,7 @@ export default function Home() {
             <li>sparc</li>
             <li>ia64</li>
             <li>hppa</li>
+            <li>s390</li>
             <li>s390x</li>
             <li>riscv</li>
             <li>riscv64</li>
