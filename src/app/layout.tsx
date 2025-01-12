@@ -5,6 +5,7 @@ import { NavBar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/toaster'
 import { ThemeProvider } from '@/components/theme'
 import { SWRConfig } from 'swr'
+import { Footer } from '@/components/footer'
 
 const inter = Inter({
   variable: '--font-inter',
@@ -40,6 +41,7 @@ export default function RootLayout({
               {children}
             </div>
             <Toaster />
+            <Footer />
           </ThemeProvider>
         </SWRConfig>
       </body>
