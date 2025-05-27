@@ -6,18 +6,18 @@ import { Button } from '@/components/ui/button'
 export const NavBar = () => {
   return (
     <nav className='flex justify-center items-center py-4'>
-      <Link href='/' legacyBehavior passHref>
-        <Button variant='ghost'>
+      <Button variant='ghost' asChild>
+        <Link href='/'>
           <img src='/Icon.svg' alt='ISO Archive' className='h-8 w-8' />
           ISO Archive
-        </Button>
-      </Link>
-      <Link href='/os' legacyBehavior passHref>
-        <Button variant='ghost'>OS List</Button>
-      </Link>
-      <Link href='/contact' legacyBehavior passHref>
-        <Button variant='ghost'>Contact</Button>
-      </Link>
+        </Link>
+      </Button>
+      <Button variant='ghost' asChild>
+        <Link href='/os'>OS List</Link>
+      </Button>
+      <Button variant='ghost' asChild>
+        <Link href='/contact'>Contact</Link>
+      </Button>
       <div className='ml-auto flex gap-4'>
         <ModeToggle />
       </div>

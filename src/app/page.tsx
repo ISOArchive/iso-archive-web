@@ -4,7 +4,7 @@ export default function Home() {
       <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'>
         ISO Archive
       </h1>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <p className='leading-7 not-first:mt-6'>
         A collection of ISOs for various operating systems
       </p>
       <h2 className='mt-8 mb-2 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
@@ -15,7 +15,7 @@ export default function Home() {
           '{OS name}_{version number or build number}[_{disket size}_{floppy size}]_{arch}[_{tags}].{any file extension}'
         }
       </code>
-      <p className='leading-7 [&:not(:first-child)]:mt-6'>
+      <p className='leading-7 not-first:mt-6'>
         Comma{' '}
         <code className='relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold'>
           ,

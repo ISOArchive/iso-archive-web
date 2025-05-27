@@ -1,12 +1,11 @@
 import useSWR from 'swr'
-import { useToast } from '@/hooks/use-toast'
+import { toast } from 'sonner'
 
 export const useSWRFetcher = <T>(
   url: string,
   options?: RequestInit,
   swrOptions?: { refreshInterval?: number }
 ) => {
-  const { toast } = useToast()
 
   return useSWR<T>(
     url,
@@ -14,10 +13,8 @@ export const useSWRFetcher = <T>(
       const res = await fetch(url, options)
       if (!res.ok) {
         console.error('Failed to fetch data:', res.status, res.statusText)
-        toast({
-          title: 'Error!',
-          description: 'Failed to request data',
-          variant: 'destructive'
+        toast('Error!', {
+          description: 'Failed to request data'
         })
         throw new Error('Failed to fetch data')
       }

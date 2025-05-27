@@ -66,7 +66,7 @@ export function DataTableColumnHeader<TData, TValue>({
           <Button
             variant='ghost'
             size='sm'
-            className='-ml-3 h-8 data-[state=open]:bg-accent'
+            className='-ml-3 h-8 text-muted-foreground data-[state=open]:bg-accent hover:cursor-pointer'
           >
             <span>{title}</span>
             {column.getIsSorted() === 'desc' ? (
@@ -80,11 +80,11 @@ export function DataTableColumnHeader<TData, TValue>({
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start'>
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp className='h-3.5 w-3.5 text-muted-foreground/70' />
+            <ArrowUp className='size-3.5 text-muted-foreground/70' />
             Asc
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown className='h-3.5 w-3.5 text-muted-foreground/70' />
+            <ArrowDown className='size-3.5 text-muted-foreground/70' />
             Desc
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -123,7 +123,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className='flex items-center space-x-2 justify-center flex-grow'>
+        <div className='flex items-center space-x-2 justify-center grow'>
           <Button
             variant='outline'
             className='hidden h-8 w-8 p-0 lg:flex'
